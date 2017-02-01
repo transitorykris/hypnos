@@ -37,3 +37,25 @@ Or build from source
 ```
 go get github.com/transitorykris/hypnos
 ```
+
+## Examples
+
+Hypnos follows [cron](https://en.wikipedia.org/wiki/Cron)
+
+Run once per minute
+
+```
+hypnos "* * * * *"
+```
+
+Run once per week
+
+```
+hypnos @weekly
+```
+
+Run on Fridays at 5:30pm
+
+```
+hypnos "30 17 * * FRI"
+```
