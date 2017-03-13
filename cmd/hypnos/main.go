@@ -33,7 +33,7 @@ func main() {
 	}
 
 	var silent bool
-	flag.BoolVar(&silent, "s", false, "Make hypnos silent")
+	flag.BoolVar(&silent, "q", false, "Make hypnos quiet")
 	flag.Parse()
 
 	if silent {
