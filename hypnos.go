@@ -1,58 +1,23 @@
-package main
+package hypnos
 
 import (
-	"flag"
-	"io/ioutil"
-	"log"
-	"os"
 	"time"
 
 	"github.com/gorhill/cronexpr"
 )
 
-const usage = `
-Usage: Just like cron!
-
-        ┌───────── minute (0 - 59)
-        │ ┌───────── hour (0 - 23)
-        │ │ ┌───────── day of month (1 - 31)
-        │ │ │ ┌───────── month (1 - 12)
-        │ │ │ │ ┌───────── day of week (0 - 6) (Sunday to Saturday;
-        │ │ │ │ │                                   7 is also Sunday)
-hypnos "* * * * *"
-
-For more details, see https://en.wikipedia.org/wiki/Cron
-`
-
-func main() {
-	logger := log.New(os.Stderr, "", 0)
-
-	flag.Usage = func() {
-		logger.Println(usage)
-		flag.PrintDefaults()
-	}
-
-	var silent bool
-	flag.BoolVar(&silent, "s", false, "Make hypnos silent")
-	flag.Parse()
-
-	if silent {
-		logger = log.New(ioutil.Discard, "", 0)
-	}
-
-	if len(flag.Args()) != 1 {
-		logger.Println(usage)
-		os.Exit(1)
-	}
-
-	expr, err := cronexpr.Parse(flag.Args()[0])
+// Sleep returns the length of time to wait until the next interval expressed in
+// crontab notation along with the date for when that will happen. If the crontab
+// expression fails to parse an error will be returned.
+func Sleep(interval string) (time.Duration, time.Time, error) {
+	var duration time.Duration
+	var date time.Time
+	expr, err := cronexpr.Parse(interval)
 	if err != nil {
-		logger.Println(usage)
-		os.Exit(1)
+		return duration, date, err
 	}
-	next := expr.Next(time.Now())
-	duration := next.Sub(time.Now())
-
-	logger.Println("Next run at", next, "Sleeping for", duration)
+	date = expr.Next(time.Now())
+	duration = date.Sub(time.Now())
 	time.Sleep(duration)
+	return duration, date, nil
 }
