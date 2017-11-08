@@ -18,6 +18,5 @@ func Sleep(interval string) (time.Duration, time.Time, error) {
 	}
 	date = expr.Next(time.Now())
 	duration = date.Sub(time.Now())
-	time.Sleep(duration)
 	return duration, date, nil
 }
